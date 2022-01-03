@@ -1,9 +1,9 @@
 import './App.css';
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from "react"
 
 function App() {
-  // const conn = "https://appointment-booking-server.herokuapp.com"
-  const conn = "http://192.168.1.9:5000"
+  const conn = "https://appointment-booking-server.herokuapp.com"
+  // const conn = "http://192.168.1.9:5000"
 
   const USER = "61d0b3ed05ec9e8c589dd20e"; // Wasim
   // const USER = "61d1daa74d99c961936ffc6e"; // Burgos
@@ -99,7 +99,11 @@ function App() {
         buyer : buyers?.filter(x => x._id === element.buyerId)[0],
         appointment: element
       })
+      // console.log( element,"--", new Date(element.date))
     });
+    // console.log("before",tempAppointments)
+    // tempAppointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+    // console.log("after", tempAppointments)
     setAppointments(tempAppointments)
   }
 
