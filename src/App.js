@@ -5,8 +5,8 @@ function App() {
   // const conn = "https://appointment-booking-server.herokuapp.com"
   const conn = "http://192.168.1.9:5000"
 
-  // const USER = "61d0b3ed05ec9e8c589dd20e"; // Wasim
-  const USER = "61d1daa74d99c961936ffc6e"; // Burgos
+  const USER = "61d0b3ed05ec9e8c589dd20e"; // Wasim
+  // const USER = "61d1daa74d99c961936ffc6e"; // Burgos
   // const USER = "61d1db344d99c961936ffc70"; // Awatif
   // const USER = "61d1db734d99c961936ffc72"; // Miguel
   // const USER = "61d1dc4d4d99c961936ffc73"; // Niyamath
@@ -16,21 +16,16 @@ function App() {
   const [buyers, setBuyers] = useState([]);
   const [requests, setRequests] = useState([]);
   const [appointments, setAppointments] = useState([]);
-  const [availabilityState, setAvailabilityState] = useState(false);
   const [view, setView] = useState("appointment");
   const [edit, setEdit] = useState(false);
   const [timings, setTimings] = useState([]);
+  const [tempTimings, setTempTimings] = useState([]);
   // const timings = useRef([])
 
   useEffect(() => {
     handleLoad()
   }, []);
 
-  useEffect(() => {
-    if(timings){
-      console.log("TIMING SET")
-    }
-  }, [timings]);
 
   useEffect(() => {
     if(user && buyers){
@@ -94,7 +89,6 @@ function App() {
         request: element
       })
     });
-    // console.log("TEMP REQP " , tempRequests)
     setRequests(tempRequests)
   }
 
@@ -106,7 +100,6 @@ function App() {
         appointment: element
       })
     });
-    // console.log("TEMPAP " , tempAppointments)
     setAppointments(tempAppointments)
   }
 
@@ -116,33 +109,56 @@ function App() {
   }
 
   const handleEdit = () => {
+    let tempArray = [...timings]
+    let tempArray2 = [...tempTimings];
+
+    tempArray2.forEach(item => {
+      const index = tempArray.indexOf(item)
+      if(index !== -1){
+        let tempItem = tempArray[index]
+        tempItem.status = !tempItem.status
+
+        tempArray[index] = tempItem;
+      }
+
+      setTimings(tempArray)
+      setTempTimings([])
+    });
+    
     setEdit(!edit)
-    timings.current = [];
-    setAvailabilityState(!availabilityState)
   }
 
-  const handleSave = () => {
-    console.log("-------",timings.current)
+  const handleSave = async () => {
+    const data = {
+      _id: user._id,
+      timings: timings
+    }
+    try {
+      let url = `${conn}/seller/updateAvailability`
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      let res = await response.json()
+      if(res.message === "Success"){
+        // handleLoad()
+        console.log("SUCCESSS")
+      }
+    } catch (err) {
+      console.log("FetchUser Errror ",err.message)
+    }
+    setTempTimings([])
+    setEdit(false)
   }
 
   const handleTiming = (item) => {
-    let tempArray = timings
-    // let tempArray2 = timings.current;
+    let tempArray = [...timings]
+    let tempArray2 = [...tempTimings];
     let tempItem = item;
-    // if(timings?.includes(item)){
-    //   tempArray = timings?.filter(x => x.time !== item.time)
-    // }
-    // else {
-    //   if(item.status === true){
-    //     tempItem.status = false;
-    //   } else {
-    //     tempItem.status = true;
-    //   }
-    //   tempArray.push(tempItem)
-    // }
-    // timings.current = tempArray
-    // setAvailabilityState(!availabilityState)
-    // console.log("ARRRRR -- ",timings.current)
+    
 
     if(item.status === true){
       tempItem.status = false;
@@ -154,10 +170,11 @@ function App() {
 
     if(index !== -1){
       tempArray[index] = tempItem;
+      tempArray2.push(tempItem)
     }
+
     setTimings(tempArray)
-    // console.log("ARRR", tempArray)
-    console.log("ARRR", timings)
+    setTempTimings(tempArray2)
   }
 
   const acceptRequest = async (item) => {
@@ -228,7 +245,7 @@ function App() {
               <button className={view === "appointment" ?'headerButton':"activeHeaderButton"} onClick={()=>handleView("request")}>Requests</button>
             </div>
             <div className='containerBottom'>
-              {view === "appointment" && appointments?.length > 0 && appointments.map( (item, index) =>
+              {view === "appointment" && appointments?.length > 0 ? appointments.map( (item, index) =>
                 <div key={index} className='appointmentItem'>
                   <div className='imageDiv'>
                     <img src={item.buyer?.photoURL} className="image" alt="image" />
@@ -246,9 +263,12 @@ function App() {
                     {item.appointment.status}
                   </div>
                 </div>
-              )}
+              )
+              : view === "appointment" &&
+                <div className='noItemsText'>There are no upcoming appointments</div>
+              }
 
-              {view === "request" && requests?.length > 0 && requests.map( (item, index) =>
+              {view === "request" && requests?.length > 0 ? requests.map( (item, index) =>
                 <div key={index} className='appointmentItem'>
                   <div className='imageDiv'>
                     <img src={item.buyer?.photoURL} className="image" />
@@ -271,7 +291,10 @@ function App() {
                     </button>
                   </div>
                 </div>
-              )}
+              )
+              : view === "request" &&
+                <div className='noItemsText'>There are no requests</div>
+              }
             </div>
           </div>
         </div>
@@ -292,7 +315,7 @@ function App() {
           <div className='rightContainerBody'>
             {timings?.filter(x=> x.status === true || x.status === !edit).map((item, index) =>
               <button key={index} className={item.status === true ?'activeTimeButton' :'timeButton'}  disabled={!edit} onClick={()=>handleTiming(item)}>
-                {item.status + ""}
+                {item.time}
               </button>
             )}
           </div>

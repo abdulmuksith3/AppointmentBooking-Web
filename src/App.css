@@ -451,3 +451,10 @@ p {
   font-weight: lighter;
 }
 
+.noItemsText {
+  text-align: center;
+  font-size: 18px;
+  font-family: 'Poppins';
+  font-weight: lighter;
+  margin-top: 10%;
+}
