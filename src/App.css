@@ -88,7 +88,7 @@
 }
 
 .rightTop {
-  background-color: yellow;
+  /* background-color: yellow; */
   display: flex;
   flex-direction: column;
   height: 30vh;
@@ -97,10 +97,11 @@
 }
 
 .rightBottom {
-  background-color: red;
+  /* background-color: red; */
   display: flex;
   flex-direction: column;
   height: 70vh;
+  align-items: center;
 }
 
 .helloText {
@@ -112,9 +113,10 @@
 
 .notificationText {
   color: #FFFFFF;
-  font-size: calc(5px + 2vmin);
+  font-size: calc(10px + 1vmin);
   font-family: 'Poppins';
   /* background-color: yellow; */
+  
 }
 
 .container {
@@ -331,13 +333,121 @@
 
 .userName {
   text-align: center;
-  font-size: 24px;
+  font-size: calc(3px + 2vmin);
   font-family: 'Poppins';
   font-weight: 600;
 }
 
 .userCompany {
   text-align: center;
-  font-size: 16px;
+  font-size: calc(5px + 1vmin);
   font-family: 'Poppins';
 }
+
+p {
+  height: 0px;
+}
+
+.rightContainerHeader{
+  display: flex;
+  flex-direction: row;
+  font-size: calc(5px + 1vmin);
+  font-family: 'Poppins';
+  font-weight: 600;
+  /* background-color: green; */
+  width: 90%;
+  align-items: center;
+  height: 10%;
+}
+
+.edit {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #FFFFFF;
+  color: #695CD5;
+  /* aspect-ratio: 1/1; */
+  /* border-radius: 100%; */
+  border: none;
+  margin-left: 2px;
+}
+
+.rightContainerBody{
+  display: flex;
+  flex-direction: row;
+  font-size: calc(5px + 1vmin);
+  font-family: 'Poppins';
+  font-weight: 600;
+  /* background-color: green; */
+  width: 90%;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.timeButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #FFFFFF;
+  color: #695CD5;
+  border: solid;
+  border-color: #695CD5;
+  border-width: 1px;
+  margin-right: 2%;
+  margin-bottom: 5%;
+  height: 50px;
+  width: 23%;
+  max-width: 90px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-family: 'Poppins';
+  font-weight: lighter;
+}
+
+.activeTimeButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #695CD5;
+  color: #FFFFFF;
+  border: none;
+  margin-right: 2%;
+  margin-bottom: 5%;
+  height: 50px;
+  width: 23%;
+  max-width: 90px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 12px;
+  font-family: 'Poppins';
+  font-weight: lighter;
+}
+
+.rightContainerFooter{
+  display: flex;
+  /* background-color: green; */
+  width: 90%;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+}
+
+.saveButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #695CD5;
+  color: #FFFFFF;
+  border: none;
+  height: 50px;
+  width:  100%;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+  font-family: 'Poppins';
+  font-weight: lighter;
+}
+

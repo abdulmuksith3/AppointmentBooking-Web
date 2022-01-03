@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect, useRef } from "react"
 
 function App() {
   // const conn = "https://appointment-booking-server.herokuapp.com"
@@ -16,18 +16,28 @@ function App() {
   const [buyers, setBuyers] = useState([]);
   const [requests, setRequests] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [availabilityState, setAvailabilityState] = useState(false);
   const [view, setView] = useState("appointment");
+  const [edit, setEdit] = useState(false);
+  const [timings, setTimings] = useState([]);
+  // const timings = useRef([])
 
   useEffect(() => {
     handleLoad()
   }, []);
 
-  // useEffect(() => {
-  //   if(user && buyers){
-  //     handleAppointments()
-  //     handleRequests()
-  //   }
-  // }, [user, buyers]);
+  useEffect(() => {
+    if(timings){
+      console.log("TIMING SET")
+    }
+  }, [timings]);
+
+  useEffect(() => {
+    if(user && buyers){
+      handleAppointments()
+      handleRequests()
+    }
+  }, [user, buyers]);
 
   const handleLoad= async () => {
     // console.log("handleLoad-----------")
@@ -51,6 +61,7 @@ function App() {
       let res = await response.json()
       // console.log("USERR - ",res)
       setUser(res)
+      setTimings(res.availability)
     } catch (err) {
       console.log("FetchUser Errror ",err.message)
     }
@@ -102,6 +113,51 @@ function App() {
   const handleView = (view) => {
     handleLoad()
     setView(view)
+  }
+
+  const handleEdit = () => {
+    setEdit(!edit)
+    timings.current = [];
+    setAvailabilityState(!availabilityState)
+  }
+
+  const handleSave = () => {
+    console.log("-------",timings.current)
+  }
+
+  const handleTiming = (item) => {
+    let tempArray = timings
+    // let tempArray2 = timings.current;
+    let tempItem = item;
+    // if(timings?.includes(item)){
+    //   tempArray = timings?.filter(x => x.time !== item.time)
+    // }
+    // else {
+    //   if(item.status === true){
+    //     tempItem.status = false;
+    //   } else {
+    //     tempItem.status = true;
+    //   }
+    //   tempArray.push(tempItem)
+    // }
+    // timings.current = tempArray
+    // setAvailabilityState(!availabilityState)
+    // console.log("ARRRRR -- ",timings.current)
+
+    if(item.status === true){
+      tempItem.status = false;
+    } else {
+      tempItem.status = true;
+    }
+
+    const index = tempArray.indexOf(item)
+
+    if(index !== -1){
+      tempArray[index] = tempItem;
+    }
+    setTimings(tempArray)
+    // console.log("ARRR", tempArray)
+    console.log("ARRR", timings)
   }
 
   const acceptRequest = async (item) => {
@@ -160,20 +216,6 @@ function App() {
 
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
       <div className="leftSide">
         <div className='leftTop'>
           <p className='helloText'>Hello, {user?.fullName}</p>
@@ -241,8 +283,25 @@ function App() {
           <p className='userCompany'>{user?.company}</p>
         </div>
         <div className='rightBottom'>
-          <div className=''>
-            
+          <div className='rightContainerHeader'>
+            My Availability
+            <button className='edit'  onClick={()=>handleEdit()}>
+              <i className="material-icons">{edit ? "close":"edit"}</i>
+            </button>
+          </div>
+          <div className='rightContainerBody'>
+            {timings?.filter(x=> x.status === true || x.status === !edit).map((item, index) =>
+              <button key={index} className={item.status === true ?'activeTimeButton' :'timeButton'}  disabled={!edit} onClick={()=>handleTiming(item)}>
+                {item.status + ""}
+              </button>
+            )}
+          </div>
+          <div className='rightContainerFooter'>
+            {edit && 
+              <button className='saveButton'  onClick={()=>handleSave()}>
+                Save Changes
+              </button>
+            }
           </div>
         </div>
       </div>
